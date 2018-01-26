@@ -1,0 +1,250 @@
+{
+  "total": 28,
+  "rows": [
+    {
+      "id": 1,
+      "name": "lucy",
+      "age": 18,
+      "inputTime": "2017-07-01",
+      "dept": {
+        "id": 1,
+        "name": "人事部"
+      },
+      "state": true
+    },
+    {
+      "id": 2,
+      "name": "will",
+      "age": 18,
+      "inputTime": "2017-07-01",
+      "dept": {
+        "id": 2,
+        "name": "财务部"
+      },
+      "state": true
+    },
+    {
+      "id": 3,
+      "name": "neld",
+      "age": 18,
+      "inputTime": "2017-07-01",
+      "dept": {
+        "id": 4,
+        "name": "开发部"
+      },
+      "state": true
+    },
+    {
+      "id": 4,
+      "name": "stef",
+      "age": 18,
+      "inputTime": "2017-07-01",
+      "dept": {
+        "id": 4,
+        "name": "开发部"
+      },
+      "state": false
+    },
+    {
+      "id": 5,
+      "name": "bunny",
+      "age": 18,
+      "inputTime": "2017-07-01",
+      "dept": {
+        "id": 4,
+        "name": "开发部"
+      },
+      "state": false
+    }
+  ]
+}
+{
+  "result": [
+    {
+      "id": 1,
+      "name": "admin",
+      "password": "6C5DE1B510E8BDD0BC40EFF99DCD03F8",
+      "email": "admin@abc.com",
+      "age": 20,
+      "admin": true,
+      "dept": {
+        "id": 7,
+        "name": "行政部",
+        "sn": null
+      },
+      "roles": [],
+      "roleNames": "[超级管理员]"
+    },
+    {
+      "id": 2,
+      "name": "赵总",
+      "password": "30053D584570091486C8CFD51E531266",
+      "email": "xx@xx.com",
+      "age": 35,
+      "admin": false,
+      "dept": {
+        "id": 1,
+        "name": "总经办",
+        "sn": null
+      },
+      "roles": [
+        {
+          "id": 1,
+          "name": "人事管理",
+          "sn": "HR MGR",
+          "permissions": [],
+          "menus": []
+        },
+        {
+          "id": 3,
+          "name": "仓储管理",
+          "sn": "WAREHOUSING MGR",
+          "permissions": [],
+          "menus": []
+        },
+        {
+          "id": 9,
+          "name": "A1",
+          "sn": "A1",
+          "permissions": [],
+          "menus": []
+        }
+      ],
+      "roleNames": "[人事管理,仓储管理,A1]"
+    },
+    {
+      "id": 3,
+      "name": "赵一明",
+      "password": "C4CA4238A0B923820DCC509A6F75849B",
+      "email": "xx@xx.com",
+      "age": 25,
+      "admin": false,
+      "dept": {
+        "id": 1,
+        "name": "总经办",
+        "sn": null
+      },
+      "roles": [],
+      "roleNames": "[未分配角色]"
+    },
+    {
+      "id": 4,
+      "name": "钱总",
+      "password": "C4CA4238A0B923820DCC509A6F75849B",
+      "email": "xx@xx.com",
+      "age": 35,
+      "admin": false,
+      "dept": {
+        "id": 2,
+        "name": "人力资源部",
+        "sn": null
+      },
+      "roles": [
+        {
+          "id": 1,
+          "name": "人事管理",
+          "sn": "HR MGR",
+          "permissions": [],
+          "menus": []
+        }
+      ],
+      "roleNames": "[人事管理]"
+    },
+    {
+      "id": 5,
+      "name": "钱二明",
+      "password": "C4CA4238A0B923820DCC509A6F75849B",
+      "email": "xx@xx.com",
+      "age": 25,
+      "admin": false,
+      "dept": {
+        "id": 2,
+        "name": "人力资源部",
+        "sn": null
+      },
+      "roles": [],
+      "roleNames": "[未分配角色]"
+    },
+    {
+      "id": 6,
+      "name": "孙总",
+      "password": "C4CA4238A0B923820DCC509A6F75849B",
+      "email": "xx@xx.com",
+      "age": 35,
+      "admin": false,
+      "dept": {
+        "id": 3,
+        "name": "采购部",
+        "sn": null
+      },
+      "roles": [],
+      "roleNames": "[未分配角色]"
+    },
+    {
+      "id": 7,
+      "name": "孙三明",
+      "password": "C4CA4238A0B923820DCC509A6F75849B",
+      "email": "xx@xx.com",
+      "age": 25,
+      "admin": false,
+      "dept": {
+        "id": 3,
+        "name": "采购部",
+        "sn": null
+      },
+      "roles": [],
+      "roleNames": "[未分配角色]"
+    },
+    {
+      "id": 8,
+      "name": "李总",
+      "password": "C4CA4238A0B923820DCC509A6F75849B",
+      "email": "xx@xx.com",
+      "age": 35,
+      "admin": false,
+      "dept": {
+        "id": 4,
+        "name": "仓储部",
+        "sn": null
+      },
+      "roles": [],
+      "roleNames": "[未分配角色]"
+    },
+    {
+      "id": 9,
+      "name": "李四明",
+      "password": "C4CA4238A0B923820DCC509A6F75849B",
+      "email": "xx@xx.com",
+      "age": 25,
+      "admin": false,
+      "dept": {
+        "id": 4,
+        "name": "仓储部",
+        "sn": null
+      },
+      "roles": [],
+      "roleNames": "[未分配角色]"
+    },
+    {
+      "id": 10,
+      "name": "周总",
+      "password": "C4CA4238A0B923820DCC509A6F75849B",
+      "email": "xx@xx.com",
+      "age": 35,
+      "admin": false,
+      "dept": {
+        "id": 5,
+        "name": "财务部",
+        "sn": null
+      },
+      "roles": [],
+      "roleNames": "[未分配角色]"
+    }
+  ],
+  "totalCount": 19,
+  "currentPage": 1,
+  "pageSize": 10,
+  "prevPage": 1,
+  "nextPage": 2,
+  "totalPage": 2
+}

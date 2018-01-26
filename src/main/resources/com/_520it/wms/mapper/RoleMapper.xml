@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.wms.mapper.RoleMapper">
+    <resultMap id="BaseResultMap" type="com._520it.wms.domain.Role">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="sn" property="sn"/>
+        <collection property="permissions" ofType="Permission" column="id"
+                    select="com._520it.wms.mapper.PermissionMapper.selectAllByRoleId"/>
+        <collection property="menus" ofType="SystemMenu" column="id"
+                    select="com._520it.wms.mapper.SystemMenuMapper.selectAllByRoleId"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey">
+    delete from `role`where id = #{id}
+  </delete>
+    <delete id="deleteRelationByPermission">
+    DELETE from role_permission where role_id=#{roleId}
+    </delete>
+    <!--删除指定角色id对应的所有菜单关系-->
+    <delete id="deleteRelationBySystemMenu">
+    DELETE from role_menu where role_id=#{roleId}
+    </delete>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    insert into `role` (name, sn)values (#{name}, #{sn})
+  </insert>
+    <insert id="insertRelationByPermission">
+        INSERT INTO role_permission (role_id, permission_id) VALUES (#{roleId},#{permissionId})
+    </insert>
+    <!--w维护role_menu表-->
+    <insert id="insertRelationBySystemMenu">
+      INSERT INTO role_menu(role_id, menu_id) VALUES (#{roleId},#{menuId})
+
+
+    </insert>
+    <update id="updateByPrimaryKey">
+    update `role`set name = #{name},sn = #{sn}where id = #{id}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select id, name, sn from `role`where id = #{id}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select id, name, sn from `role`
+  </select>
+    <select id="queryForCount" resultType="int">
+        select COUNT(id)
+        from  role
+    </select>
+    <select id="queryForList" resultMap="BaseResultMap">
+        select id,name,sn
+        from role
+        limit #{start},#{pageSize}
+    </select>
+    <!--用员工的id到员工和角色表中查找角色的id,name,sn-->
+    <select id="selectByEmployeeId" resultType="Role">
+        select r.id,r.name,r.sn
+        from role r JOIN employee_role er on r.id=er.role_id
+        where er.employee_id = #{employeeId}
+    </select>
+</mapper>

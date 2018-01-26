@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.wms.mapper.ChartMapper" >
+ <!--订货报表-->
+    <sql id="base_where">
+        <where>
+            <if test="keyword !=null">
+                AND (p.NAME LIKE concat('%',#{keyword},'%')or p.sn LIKE concat('%',#{keyword},'%'))
+            </if>
+            <if test="brandId >0">
+                and p.brand_id =#{brandId}
+            </if>
+            <if test="supplierId >0">
+                and s.id =#{supplierId}
+            </if>
+            <if test="biginDate !=null">
+                and bill.vdate >= #{biginDate}
+            </if>
+            <if test="endDate !=null">
+                and bill.vdate &lt;= #{endDate}
+            </if>
+           and bill.status=1
+        </where>
+    </sql>
+  <select id="queryOrderChart" resultType="map">
+      select
+      ${groupBy} groupType,
+      sum(item.number) totalNumber,
+      sum(item.amount) totalAmount
+      from orderbillitem item
+      JOIN orderbill bill ON item.bill_id=bill.id
+      JOIN employee iu ON bill.inputUser_id=iu.id
+      JOIN product p ON p.id=item.product_id
+      JOIN supplier s ON s.id=bill.supplier_id
+      <include refid="base_where"/>
+GROUP BY ${groupBy}
+  </select>
+<!--======================================-->
+
+    <sql id="sale_where">
+        <where>
+            <if test="keyword !=null">
+                AND (p.NAME LIKE concat('%',#{keyword},'%')or p.sn LIKE concat('%',#{keyword},'%'))
+            </if>
+            <if test="brandId >0">
+                and p.brand_id =#{brandId}
+            </if>
+            <if test="clientId >0">
+                and c.id =#{clientId}
+            </if>
+            <if test="biginDate !=null">
+                and sa.vdate >= #{biginDate}
+            </if>
+            <if test="endDate !=null">
+                and sa.vdate &lt;= #{endDate}
+            </if>
+        </where>
+    </sql>
+    <select id="querySaleChart" resultType="map">
+        SELECT
+        ${groupBy} groupType,
+        sum(sa.number) totalNumber,
+        sum(sa.saleAmount) totalAmount,
+        sum(sa.saleAmount-sa.costAmount) grossProfit
+        from saleaccount sa
+        JOIN employee sm on sa.saleman_id=sm.id
+        JOIN product p on sa.product_id=p.id
+        JOIN client c ON sa.client_id=c.id
+        <include refid="sale_where"/>
+        GROUP BY  ${groupBy}
+    </select>
+</mapper>

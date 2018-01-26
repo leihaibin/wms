@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        ">
+
+	<!--导入app配置文件-->
+	<import resource="classpath:applicationContext.xml"/>
+	<!--注解驱动器-->
+	<mvc:annotation-driven/>
+	<!--试图解析器-->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!--试图前缀-->
+		<property name="prefix" value="/WEB-INF/views/"/>
+		<!--试图后缀-->
+		<property name="suffix" value=".jsp"/>
+	</bean>
+	<import resource="classpath:applicationContext.xml"/>
+	<!--配置登录拦截器-->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<mvc:exclude-mapping path="/login.do"/>
+			<bean class="com._520it.wms.web.controller.web.interceptor.CheckLoginIntercetor"/>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	<!--权限拦截器-->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<mvc:exclude-mapping path="/login.do"/>
+			<bean class="com._520it.wms.web.controller.web.interceptor.SecurityIntercetor"/>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	<!--<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		&lt;!&ndash; 定义默认的异常处理页面，当该异常类型的注册时使用 &ndash;&gt;
+		<property name="defaultErrorView" value="commons/error"/>
+		&lt;!&ndash; 定义异常处理页面用来获取异常信息的变量名，默认名为exception &ndash;&gt;
+		<property name="exceptionAttribute" value="ex"/>
+		&lt;!&ndash; 定义需要特殊处理的异常，用类名或完全路径名作为key，异常页名作为值 &ndash;&gt;
+		<property name="exceptionMappings">
+			<value>
+				com._520it.wms.util.SystemException=commons/nopermission
+			</value>
+		</property>
+	</bean>-->
+	<!--上传文件解析器-->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="10000000000"/>
+	</bean>
+</beans>

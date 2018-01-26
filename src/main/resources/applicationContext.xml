@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        ">
+	<!--组件驱动器-->
+	<context:component-scan base-package="com._520it.wms"/>
+	<!--自动DI解析器-->
+	<context:annotation-config/>
+	<!--mapper解析器-->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com._520it.wms.mapper"/>
+	</bean>
+	<!--引入属性占位符-->
+	<context:property-placeholder location="classpath:db.properties" system-properties-mode="NEVER"/>
+		<!--德鲁伊连接池-->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="clone">
+		<property name="driverClassName" value="${jdbc.driverClassName}"/>
+		<property name="url" value="${jdbc.url}"/>
+		<property name="username" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+	<property name="filters" value="config,stat"/>
+		<property name="connectionProperties" value="config.decrypt=true"/>
+	</bean>
+	<!--Sqlsession-->
+	<bean id="SqlsessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!--1.连接池-->
+		<property name="dataSource" ref="dataSource"/>
+		<!--2.关联mybatus配置文件-->
+		<property name="configLocation" value="classpath:mybatis.xml"/>
+		<!--3.关联mapper文件-->
+		<property name="mapperLocations" value="classpath:com/_520it/wms/mapper/*Mapper.xml"/>
+		<!--4.扫面项目中的类的别名-->
+		<property name="typeAliasesPackage" value="com._520it.wms.domain"/>
+ 	</bean>
+	<!--配置3W-->
+	<!--what-->
+		<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+			<property name="dataSource" ref="dataSource"/>
+		</bean>
+	<!--where-->
+	<tx:advice transaction-manager="txManager" id="txAdvice">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true"/>
+			<tx:method name="list*" read-only="true"/>
+			<tx:method name="query*" read-only="true"/>
+			<tx:method name="select*" read-only="true"/>
+			<tx:method name="*" propagation="REQUIRED"/>
+		</tx:attributes>
+	</tx:advice>
+	<!--when-->
+	<aop:config>
+		<aop:pointcut id="pc" expression="execution(* com._520it.wms.service.*Service.*(..))"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="pc"/>
+	</aop:config>
+</beans>

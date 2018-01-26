@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.wms.mapper.EmployeeMapper" >
+  <resultMap id="BaseResultMap" type="com._520it.wms.domain.Employee" >
+    <id column="id" property="id" />
+    <result column="name" property="name" />
+    <result column="password" property="password" />
+    <result column="email" property="email" />
+    <result column="age" property="age" />
+    <result column="dept_id" property="dept.id" />
+    <result column="admin" property="admin"/>
+    <!--assocition返回的是单个对象-->
+    <association property="dept" javaType="Department" columnPrefix="d_">
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+    </association>
+    <!--collcition 返回的是集合-->
+    <collection property="roles" ofType="Role" column="id"
+                select="com._520it.wms.mapper.RoleMapper.selectByEmployeeId"/>
+
+  </resultMap>
+  <!--删除SQL-->
+  <delete id="deleteByPrimaryKey">
+    delete from `employee`
+    where id = #{id}
+  </delete>
+  <!--删除员工和角色的关联表关系-->
+  <delete id="deleteRelationByRole">
+    DELETE from employee_role where employee_id=#{employeeId}
+  </delete>
+  <!---->
+  <delete id="batchDelete">
+
+    DELETE FROM employee where id IN
+    <foreach collection="ids" open="(" close=")" separator="," item="id">
+    #{id}
+
+    </foreach>
+
+  </delete>
+  <!--保存员工-->
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into `employee` (name, password, email, age, admin, dept_id)
+    values (#{name}, #{password}, #{email}, #{age}, #{admin}, #{dept.id})
+  </insert>
+  <!--保存员工和角色的关系到员工角色关系表-->
+  <insert id="insertRelationByRole">
+    INSERT INTO employee_role (employee_id, role_id) VALUES (#{employeeId},#{roleId})
+  </insert>
+  <!--更新员工信息-->
+  <update id="updateByPrimaryKey" >
+    update `employee`
+    set name = #{name},
+      email = #{email},
+      age = #{age},
+      admin = #{admin},
+      dept_id = #{dept.id}
+    where id = #{id}
+  </update>
+  <!--抽取的表的相同的代码-->
+  <sql id="base_table">
+      employee e LEFT JOIN department d ON e.dept_id = d.id
+  </sql>
+  <!--抽取出来的查询相同的列以及对应的别名-->
+  <sql id="base_column">
+      e.id, e.name, e.password, e.email, e.age, e.admin,
+  d.id as d_id,d.name as d_name
+  </sql>
+  <!--高级查询的条件拼接-->
+  <sql id="base_where">
+      <where>
+        <if test="keyword != null">
+          AND (e.name LIKE concat('%',#{keyword},'%')or e.email LIKE concat('%',#{keyword},'%'))
+        </if>
+        <if test="deptId>0 ">
+          and e.dept_id=#{deptId}
+        </if>
+      </where>
+  </sql>
+
+  <!--查询一个员工的信息和部门信息-->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+   select <include refid="base_column"/>
+  from <include refid="base_table"/>
+    where e.id = #{id}
+  </select>
+  <!--高级查询-->
+  <select id="queryForCount" resultType="int">
+   select COUNT(e.id)
+    from  <include refid="base_table"/>
+    <include refid="base_where"/>
+  </select>
+
+
+  <select id="queryForList" resultMap="BaseResultMap" >
+    select <include refid="base_column"/>
+    from  <include refid="base_table"/>
+    <include refid="base_where"/>
+    limit #{start},#{pageSize}
+  </select>
+  <select id="queryForEasy" resultMap="BaseResultMap" >
+    select <include refid="base_column"/>
+    from  <include refid="base_table"/>
+    <include refid="base_where"/>
+    limit #{start},#{pageSize}
+  </select>
+  <!--登入验证-->
+  <select id="selectByUsernamePassword" resultType="com._520it.wms.domain.Employee">
+    SELECT  e.*
+    FROM employee e
+    where e.name=#{username} and e.password=#{password}
+  </select>
+  <!--查找-->
+  <select id="selectPermissionExpressionByEmployeeId" resultType="java.lang.String">
+    SELECT P.expression
+    FROM employee_role er
+    JOIN role_permission rp ON er.role_id=rp.role_id
+    JOIN permission p ON rp.permission_id=p.id
+    WHERE er.employee_id=#{employeeId}
+  </select>
+</mapper>

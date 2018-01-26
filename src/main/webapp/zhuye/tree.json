@@ -1,0 +1,14 @@
+[{
+	"id":1,
+	"text":"系统管理",
+	"children":[{
+		"id":11,
+		"text":"员工管理",
+		"url":"employee.html"
+	},{
+		"id":11,
+		"text":"部门管理",
+		"url":"department.html"
+	}
+	]
+}]

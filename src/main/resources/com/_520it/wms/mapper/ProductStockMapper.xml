@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.wms.mapper.ProductStockMapper" >
+  <resultMap id="BaseResultMap" type="com._520it.wms.domain.ProductStock" >
+    <id column="id" property="id" />
+    <result column="price" property="price" />
+    <result column="storeNumber" property="storeNumber" />
+    <result column="amount" property="amount" />
+    <association property="depot" javaType="Depot" columnPrefix="d_">
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+    </association>
+    <association property="product" javaType="Product" columnPrefix="p_">
+      <id column="id" property="id"/>
+      <result column="name" property="name"/>
+      <result column="sn" property="sn"/>
+      <result column="brandName" property="brandName"/>
+    </association>
+  </resultMap>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into `productstock` (price, storeNumber, amount, product_id, depot_id)
+    values (#{price}, #{storeNumber}, #{amount}, #{product.id}, #{depot.id})
+  </insert>
+  <update id="updateByPrimaryKey" >
+    update `productstock`
+    set price = #{price},
+      storeNumber = #{storeNumber},
+      amount = #{amount},
+      product_id = #{product.id},
+      depot_id = #{depot.id}
+    where id = #{id}
+  </update>
+  <sql id="base_column">
+    ps.id, ps.price, ps.storeNumber,ps.amount,
+    d.id d_id,d.name d_name,
+    p.id p_id,p.name p_name,p.brand_id p_brandId,p.sn p_sn,p.brandName p_brandName
+  </sql>
+  <sql id="base_from">
+    productstock ps JOIN depot d ON ps.depot_id=d.id JOIN product p ON ps.product_id=p.id
+  </sql>
+  <sql id="base_where">
+    <where>
+      <if test="keyword !=null">
+        AND (p.name like concat('%',#{keyword},'%') or p.sn like concat('%',#{keyword},'%'))
+      </if>
+      <if test="depotId >0">
+        and ps.depot_id =#{depotId}
+      </if>
+      <if test="brandId > 0">
+        and p.brand_id=#{brandId}
+      </if>
+      <if test="limitNumber !=null">
+        and ps.storeNumber &lt; #{limitNumber}
+      </if>
+    </where>
+  </sql>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select <include refid="base_column"/>
+    from <include refid="base_from"/>
+  </select>
+  <select id="queryForCount" resultType="int" >
+    select COUNT(ps.id)
+    from <include refid="base_from"/>
+    <include refid="base_where"/>
+  </select>
+  <select id="queryForList" resultMap="BaseResultMap" >
+    select <include refid="base_column"/>
+    from <include refid="base_from"/>
+    <include refid="base_where"/>
+    limit #{start},#{pageSize}
+  </select>
+  <select id="selectByDepotAndProduct" resultMap="BaseResultMap" >
+    select <include refid="base_column"/>
+    from <include refid="base_from"/>
+    where ps.depot_id =#{depotId} and ps.product_id=#{productId}
+  </select>
+
+</mapper>
